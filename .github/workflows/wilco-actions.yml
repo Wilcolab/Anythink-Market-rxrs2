@@ -1,4 +1,7 @@
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   wilco:
@@ -27,27 +30,14 @@ jobs:
       - name: Use Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.9.13"
+
+      - uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
 
       - name: Wilco checks
         id: Wilco
         uses: trywilco/actions@main
         with:
-          owner: ${{ github.repository_owner }}
-  Lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - name: Check out project
-        uses: actions/checkout@v2
-      - name: Lint code
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16'
-          cache: 'yarn'
-      - run: yarn install
-      - run: yarn lint
+          engine: ${{ secrets.WILCO_ENGINE_URL }}
